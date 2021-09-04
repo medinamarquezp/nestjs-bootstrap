@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# When --dist flag is set, we are running transpiled javascript from dist/.
+# Configure custom path aliases to resolve them inside dist/.
+if [ "$1" == "--dist" ]; then
+    export NODE_OPTIONS="-r ./tsconfig-paths-dist.js $NODE_OPTIONS"
+    shift
+else
+    # Otherwise, we are running typescript code through ts-node. Register it
+    # and tsconfig-paths, which will pick up path aliases from tsconfig.json.
+    export NODE_OPTIONS="-r tsconfig-paths/register -r ts-node/register $NODE_OPTIONS"
+fi
+
+exec node $@

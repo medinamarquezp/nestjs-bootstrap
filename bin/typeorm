@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Wrapper to run Typeorm CLI with the project's default DB config.
+
+# When running inside Docker, node_modules/ folder may be located
+# in NODE_MODULES_PATH instead of the current directoy.
+modulesPath=${NODE_MODULES_PATH:-./node_modules}
+
+./bin/run-node "$modulesPath/typeorm/cli.js" --config src/config/typeorm.config.ts $@
