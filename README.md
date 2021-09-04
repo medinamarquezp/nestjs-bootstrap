@@ -14,9 +14,11 @@ A base template of [NestJS](https://github.com/nestjs/nest) framework with some 
 -   Auth with JWT
 -   Users CRUD
 -   Swagger docs
--   Utilities for E2E and unit tests
+-   Utilities for E2E and unit testing
 -   Some shared utilities
--   Husky
+-   CORS and Helmet
+-   Husky executing linting, format and tests on pre-push
+-   Git commit message linter
 
 The purpose of this repository is to have in a base NestJS project all the boilerplate and configuration required to prevent starting every project from scratch. The main idea is to mantein all dependecies up to date and to add all those shared functionalities required in my future projects.
 

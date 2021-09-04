@@ -7,8 +7,9 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import * as cors from 'cors';
-import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception-filter';
+import * as helmet from 'helmet';
 import { appConfig } from './config/app.config';
+import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception-filter';
 
 async function bootstrap(): Promise<void> {
     if (!process.env.JWT_SECRET) {
@@ -21,7 +22,10 @@ async function bootstrap(): Promise<void> {
     if (process.env.NODE_ENV !== 'production') {
         await bootstrapSwagger(app);
     }
+
     app.use(cors());
+
+    app.use(helmet());
 
     app.useGlobalFilters(new BadRequestExceptionFilter());
 
