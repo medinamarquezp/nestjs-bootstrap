@@ -13,7 +13,7 @@ RUN apk del tzdata
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json .
 
 ENV NODE_MODULES_PATH /usr/src/app/node_modules
 ENV PATH ${NODE_MODULES_PATH}/.bin:${PATH}
@@ -21,7 +21,7 @@ ENV PATH ${NODE_MODULES_PATH}/.bin:${PATH}
 RUN npm install glob rimraf
 RUN npm install
 
-COPY . ./
+COPY . .
 
 EXPOSE 3000
 

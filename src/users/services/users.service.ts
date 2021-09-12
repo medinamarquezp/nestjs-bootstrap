@@ -1,42 +1,70 @@
-import { Not, Equal } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
+import { Not, Equal, FindConditions } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@/users/entities/user.entity';
-import { UserResponseDto } from '@/users/responses/user-response.dto';
-import { Message } from '@/shared/responses/success-message.response';
+import { UserCreateDto } from '../dto/user-create.dto';
+import { UserUpdateDto } from '../dto/user-update.dto';
 
 @Injectable()
 export class UsersService {
-    async getUsers(user): Promise<UserResponseDto[]> {
+    async getUsers(user: User): Promise<User[]> {
         const users = await User.find({ id: Not(Equal(user.id)) });
         if (!users.length) {
             throw new NotFoundException(`No users found`);
         }
-        users.forEach((user) => {
-            delete user.password;
-            delete user.salt;
-        });
-
         return users;
     }
 
-    async getUserById(id): Promise<UserResponseDto> {
-        const user = await User.findOne({ id });
+    async getUserById(id: number): Promise<User> {
+        return await this.getUserBy({ id });
+    }
+
+    async getUserByUsername(username: string): Promise<User> {
+        return await this.getUserBy({ username });
+    }
+
+    async getUserBy(criteria: FindConditions<User>): Promise<User> {
+        const user = await User.findOne(criteria);
         if (!user) {
-            throw new NotFoundException(`User with id ${id} not found`);
+            throw new NotFoundException(`User not found`);
         }
-        delete user.password;
-        delete user.salt;
         return user;
     }
 
-    async deleteUserById(id): Promise<Message> {
-        const found = await User.findOne({ id });
-        if (!found) {
-            throw new NotFoundException(`User not found`);
+    async createUser(body: UserCreateDto): Promise<User> {
+        const { username, password, role } = body;
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const user = Object.assign(new User(), {
+            username,
+            role,
+            salt,
+            password: hashedPassword,
+        });
+        return await user.save();
+    }
+
+    async updateUser(body: UserUpdateDto, id: number): Promise<User> {
+        let salt, hashedPassword;
+        const { username, password, role } = body;
+
+        if (password) {
+            salt = await bcrypt.genSalt();
+            hashedPassword = await bcrypt.hash(password, salt);
         }
 
-        await User.delete({ id });
+        let user = await this.getUserById(id);
+        user = Object.assign(user, {
+            username,
+            role,
+            salt,
+            password: hashedPassword,
+        });
+        return await user.save();
+    }
 
-        return { message: 'User deleted' };
+    async deleteUserById(id: number): Promise<void> {
+        const found = await this.getUserById(id);
+        await User.delete(found.id);
     }
 }

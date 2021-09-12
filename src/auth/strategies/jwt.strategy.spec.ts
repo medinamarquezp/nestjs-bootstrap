@@ -2,9 +2,10 @@ import { Test } from '@nestjs/testing';
 import { config as dotenv } from 'dotenv';
 import { AuthModule } from '../auth.module';
 import { JwtStrategy } from './jwt.strategy';
-import { UnauthorizedException } from '@nestjs/common';
+import { forwardRef, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { User } from '../../users/entities/user.entity';
+import { UsersModule } from '@/users/users.module';
 
 dotenv();
 
@@ -13,7 +14,7 @@ describe('JwtStrategy', () => {
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
-            imports: [AuthModule],
+            imports: [AuthModule, forwardRef(() => UsersModule)],
             providers: [AuthService, JwtStrategy],
         }).compile();
         jwtStrategy = await module.get<JwtStrategy>(JwtStrategy);

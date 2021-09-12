@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { authConfig } from '../config/auth.config';
 import { AuthService } from './services/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthController } from './controllers/auth.controller';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { AuthController } from './controllers/auth.controller';
                 expiresIn: authConfig.expiration,
             },
         }),
+        forwardRef(() => UsersModule),
     ],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],

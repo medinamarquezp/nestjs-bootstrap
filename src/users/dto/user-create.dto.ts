@@ -7,7 +7,7 @@ export class UserCreateDto {
     @IsString()
     @MinLength(4)
     @UserAlreadyExists({
-        message: 'User $value already exists. Choose another username.',
+        message: 'User $value already exists.',
     })
     username?: string;
 

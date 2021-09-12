@@ -6,7 +6,6 @@ import {
     INestApplication,
     ValidationPipe,
 } from '@nestjs/common';
-import * as cors from 'cors';
 import * as helmet from 'helmet';
 import { appConfig } from './config/app.config';
 import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception-filter';
@@ -23,9 +22,9 @@ async function bootstrap(): Promise<void> {
         await bootstrapSwagger(app);
     }
 
-    app.use(cors());
+    app.enableCors();
 
-    app.use(helmet());
+    app.use(helmet.default());
 
     app.useGlobalFilters(new BadRequestExceptionFilter());
 

@@ -6,7 +6,7 @@
 
 ## Description
 
-A base template of [NestJS](https://github.com/nestjs/nest) framework with some base configuration and utilities like:
+A base template of [NestJS](https://github.com/nestjs/nest) framework with some base configurations and some utilities like:
 
 -   Docker file and docker compose for app and MySQL database
 -   TypeORM and database configuration
@@ -20,7 +20,7 @@ A base template of [NestJS](https://github.com/nestjs/nest) framework with some 
 -   Husky executing linting, format and tests on pre-push
 -   Git commit message linter
 
-The purpose of this repository is to have in a base NestJS project all the boilerplate and configuration required to prevent starting every project from scratch. The main idea is to mantein all dependecies up to date and to add all those shared functionalities required in my future projects.
+The purpose of this repository is to have in a base NestJS project all the boilerplate and configurations required to prevent starting every REST API project from scratch. The main idea is to mantein all dependecies up to date and to add all those shared functionalities required in my future projects.
 
 ## Installation
 

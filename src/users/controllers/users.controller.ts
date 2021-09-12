@@ -6,95 +6,91 @@ import {
     Get,
     Param,
     UseGuards,
-    Put,
     Delete,
+    Patch,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '@/users/entities/user.entity';
 import { Roles } from '@/shared/roles/roles.decorator';
 import { RolesGuard } from '@/shared/roles/roles.guard';
 import { GetUser } from '@/users/decorators/get-user.decorator';
 import { UserCreateDto } from '@/users/dto/user-create.dto';
 import { UserUpdateDto } from '@/users/dto/user-update.dto';
-import { AuthService } from '@/auth/services/auth.service';
 import { UsersService } from '@/users/services/users.service';
-import { UserResponseDto } from '@/users/responses/user-response.dto';
-import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { SuccessResponse } from '@/shared/responses/success-message.response';
+import {
+    ApiTags,
+    ApiResponse,
+    ApiBearerAuth,
+    ApiExtraModels,
+} from '@nestjs/swagger';
+import { UserDto } from '@/users/dto/user.dto';
+import { Response } from '@/shared/responses/base.response';
+import { ApiBaseResponse } from '@/shared/decorators/api-base-response.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
+@ApiExtraModels(Response, UserDto)
 @Controller('users')
 @UseGuards(AuthGuard(), RolesGuard)
 export class UsersController {
-    constructor(
-        private authService: AuthService,
-        private usersService: UsersService,
-    ) {}
-    @ApiResponse({
-        status: 201,
-        type: SuccessResponse,
+    constructor(private usersService: UsersService) {}
+
+    @ApiBaseResponse(UserDto, {
+        statusCode: 201,
         description: 'Create user',
     })
     @HttpCode(201)
     @Roles('admin')
     @Post('/')
     async createUser(
-        @Body() signUpDto: UserCreateDto,
-    ): Promise<SuccessResponse> {
-        const post = await this.authService.signUp(signUpDto);
-        return new SuccessResponse(post);
+        @Body() body: UserCreateDto,
+    ): Promise<Response<User, UserDto>> {
+        const user = await this.usersService.createUser(body);
+        return new Response<User, UserDto>(user, UserDto);
     }
 
-    @ApiResponse({
-        status: 200,
-        type: [UserResponseDto],
+    @ApiBaseResponse(UserDto, {
         description: 'Get list of users',
+        isArray: true,
     })
     @HttpCode(200)
     @Roles('admin')
     @Get('/')
-    async getUsers(@GetUser() user): Promise<UserResponseDto[]> {
-        return await this.usersService.getUsers(user);
+    async getUsers(@GetUser() user: User): Promise<Response<User, UserDto>> {
+        const users = await this.usersService.getUsers(user);
+        return new Response<User, UserDto>(users, UserDto);
     }
 
-    @ApiResponse({
-        status: 200,
-        type: SuccessResponse,
-        description: 'Update user info',
-    })
+    @ApiBaseResponse(UserDto, { description: 'Update user info' })
     @HttpCode(200)
     @Roles('admin')
-    @Put('/:id')
+    @Patch('/:id')
     async update(
         @Body() body: UserUpdateDto,
-        @Param('id') id,
-    ): Promise<SuccessResponse> {
-        const update = await this.authService.updateUser(body, id);
-        return new SuccessResponse(update);
+        @Param('id') id: number,
+    ): Promise<Response<User, UserDto>> {
+        const update = await this.usersService.updateUser(body, id);
+        return new Response<User, UserDto>(update, UserDto);
     }
 
-    @ApiResponse({
-        status: 200,
-        type: UserResponseDto,
-        description: 'Get current user',
-    })
+    @ApiBaseResponse(UserDto, { description: 'Get current user' })
     @HttpCode(200)
     @Roles('admin')
     @Get('/me')
-    async getUser(@GetUser() user): Promise<UserResponseDto> {
-        return await this.usersService.getUserById(user.id);
+    async getUser(@GetUser() user): Promise<Response<User, UserDto>> {
+        const me = await this.usersService.getUserById(user.id);
+        return new Response<User, UserDto>(me, UserDto);
     }
 
-    @ApiResponse({
-        status: 200,
-        type: UserResponseDto,
-        description: 'Get user by id',
-    })
+    @ApiBaseResponse(UserDto, { description: 'Get user by id' })
     @HttpCode(200)
     @Roles('admin')
     @Get('/:id')
-    async getUserById(@Param('id') id): Promise<UserResponseDto> {
-        return await this.usersService.getUserById(id);
+    async getUserById(
+        @Param('id') id: number,
+    ): Promise<Response<User, UserDto>> {
+        const user = await this.usersService.getUserById(id);
+        return new Response<User, UserDto>(user, UserDto);
     }
 
     @ApiResponse({
@@ -104,7 +100,7 @@ export class UsersController {
     @HttpCode(204)
     @Roles('admin')
     @Delete('/:id')
-    async deleteUserById(@Param('id') id): Promise<{ message: string }> {
+    async deleteUserById(@Param('id') id: number): Promise<void> {
         return await this.usersService.deleteUserById(id);
     }
 }

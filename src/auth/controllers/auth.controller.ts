@@ -1,43 +1,53 @@
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiExtraModels,
+    ApiTags,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
-import { AccessToken } from '../dto/access-token.dto';
+import { AccessTokenDto } from '../dto/access-token.dto';
 import { AuthService } from '../services/auth.service';
 import { SignUpCredentialsDto } from '../dto/signup-credentials.dto';
 import { SignInCredentialsDto } from '../dto/signin-credentials.dto';
-import { AccessTokenResponse } from '../responses/access-token.response';
+import { Response } from '@/shared/responses/base.response';
+import { ApiBaseResponse } from '@/shared/decorators/api-base-response.decorator';
+import { UserDto } from '@/users/dto/user.dto';
+import { User } from '@/users/entities/user.entity';
 
 @ApiTags('Auth')
 @Controller('auth')
+@ApiExtraModels(Response, UserDto, AccessTokenDto)
 export class AuthController {
     constructor(private authService: AuthService) {}
 
-    @ApiResponse({
-        status: 201,
+    @ApiBaseResponse(UserDto, {
         description: 'Sign up, returns only success message',
+        statusCode: 201,
     })
-    @ApiResponse({
-        status: 400,
+    @ApiBadRequestResponse({
         description: 'Bad Request (password too weak, user already exists etc)',
     })
     @Post('/signup')
-    signUp(
+    async signUp(
         @Body() authCredentialsDto: SignUpCredentialsDto,
-    ): Promise<{ message: string }> {
-        return this.authService.signUp(authCredentialsDto);
+    ): Promise<Response<User, UserDto>> {
+        const user = await this.authService.signUp(authCredentialsDto);
+        return new Response<User, UserDto>(user, UserDto);
     }
 
-    @ApiResponse({
-        status: 200,
-        type: AccessToken,
+    @ApiBaseResponse(AccessTokenDto, {
         description: 'Sign in, returns access token',
     })
-    @ApiResponse({ status: 401, description: 'Invalid credentials' })
+    @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
     @HttpCode(200)
     @Post('/signin')
     async signIn(
         @Body() signInCredentialsDto: SignInCredentialsDto,
-    ): Promise<AccessTokenResponse> {
+    ): Promise<Response<AccessTokenDto, AccessTokenDto>> {
         const accessToken = await this.authService.signIn(signInCredentialsDto);
-        return new AccessTokenResponse(accessToken);
+        return new Response<AccessTokenDto, AccessTokenDto>(
+            accessToken,
+            AccessTokenDto,
+        );
     }
 }

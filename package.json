@@ -1,6 +1,6 @@
 {
     "name": "nestjs-bootstrap",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "NestJS bootstrap template",
     "author": "Pedro Medina Márquez",
     "private": false,
@@ -14,9 +14,9 @@
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
+        "test": "NODE_ENV=test jest",
+        "test:watch": "NODE_ENV=test jest --watch",
+        "test:cov": "NODE_ENV=test jest --coverage",
         "typeorm": "bin/typeorm"
     },
     "dependencies": {
@@ -31,7 +31,6 @@
         "better-sqlite3": "^7.4.3",
         "class-transformer": "^0.4.0",
         "class-validator": "^0.13.1",
-        "cors": "^2.8.5",
         "dotenv": "^10.0.0",
         "env-var": "^7.0.1",
         "git-commit-msg-linter": "^3.2.8",
@@ -80,7 +79,7 @@
             "ts"
         ],
         "rootDir": ".",
-        "testRegex": ".*\\.spec\\.ts$",
+        "testRegex": "\\.*(\\-|\\.)spec\\.ts$",
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },

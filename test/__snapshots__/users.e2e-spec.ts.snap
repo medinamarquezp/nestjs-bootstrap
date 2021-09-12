@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Users Tests (e2e) users GET /users 1`] = `
+Array [
+  Object {
+    "id": 2,
+    "role": "guest",
+    "username": "updatedUsername",
+  },
+]
+`;
+
+exports[`Users Tests (e2e) users GET /users/1 1`] = `
+Object {
+  "id": 1,
+  "role": "admin",
+  "username": "testUsername",
+}
+`;
+
+exports[`Users Tests (e2e) users PATH /users/2 1`] = `
+Object {
+  "id": 2,
+  "role": "guest",
+  "username": "updatedUsername",
+}
+`;
+
+exports[`Users Tests (e2e) users PATH /users/2 2`] = `
+User {
+  "id": 2,
+  "role": "guest",
+  "username": "updatedUsername",
+}
+`;
+
+exports[`Users Tests (e2e) users POST /users 1`] = `
+Object {
+  "id": 2,
+  "role": "admin",
+  "username": "Nest",
+}
+`;
+
+exports[`Users Tests (e2e) users POST /users 2`] = `
+User {
+  "id": 2,
+  "role": "admin",
+  "username": "Nest",
+}
+`;

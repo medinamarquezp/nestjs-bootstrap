@@ -1,26 +1,24 @@
-import {
-    Injectable,
-    UnauthorizedException,
-    NotFoundException,
-} from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../users/entities/user.entity';
-import { trimAll } from '@/shared/helpers/trim-all.helper';
 import { JwtPayload } from '../strategies/jwt-payload.interface';
-import { AccessTokenDto } from '../responses/access-token.response';
 import { SignInCredentialsDto } from '../dto/signin-credentials.dto';
-import { Message } from '@/shared/responses/success-message.response';
+import { UsersService } from '@/users/services/users.service';
+import { SignUpCredentialsDto } from '../dto/signup-credentials.dto';
+import { AccessTokenDto } from '../dto/access-token.dto';
 
 @Injectable()
 export class AuthService {
-    constructor(private jwtService: JwtService) {}
+    constructor(
+        private jwtService: JwtService,
+        private userService: UsersService,
+    ) {}
 
     async validateUserPassword(
         signInCredentialsDto: SignInCredentialsDto,
     ): Promise<JwtPayload> {
         const { username, password } = signInCredentialsDto;
-        const user = await User.findOne({ username });
+        const user = await this.userService.getUserByUsername(username);
 
         if (user && (await user.validatePassword(password))) {
             return { username: user.username, role: user.role };
@@ -29,37 +27,9 @@ export class AuthService {
         }
     }
 
-    async signUp(body): Promise<Message> {
-        body = trimAll(body);
-        const { username, password, role } = body;
-
-        const user = new User();
-        user.username = username;
-        user.salt = await bcrypt.genSalt();
-        user.password = await bcrypt.hash(password, user.salt);
-        user.role = role;
-        await user.save();
-        return { message: `User '${username}' created` };
-    }
-
-    async updateUser(body, id): Promise<Message> {
-        const { username, password, role } = body;
-        const found = await User.findOne({ id });
-        if (!found) {
-            throw new NotFoundException(`User not found`);
-        }
-
-        if (password) {
-            found.salt = await bcrypt.genSalt();
-            found.password = await bcrypt.hash(password, found.salt);
-        }
-
-        if (username) found.username = username;
-
-        if (role) found.role = role;
-
-        await found.save();
-        return { message: 'User updated' };
+    async signUp(body: SignUpCredentialsDto): Promise<User> {
+        const user = await this.userService.createUser(body);
+        return user;
     }
 
     async signIn(
@@ -73,7 +43,6 @@ export class AuthService {
 
         const payload: JwtPayload = found;
         const accessToken = await this.jwtService.sign(payload);
-
         return { accessToken, role: found.role };
     }
 }

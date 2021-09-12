@@ -1,18 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
-export class UserResponseDto {
+export class UserDto {
     @ApiProperty({ example: 5 })
-    id?: number;
+    id: number;
 
     @ApiProperty({ example: 'testUsername' })
-    username?: string;
+    username: string;
+
+    @Exclude()
+    password: string;
+
+    @Exclude()
+    salt: string;
 
     @ApiProperty({ example: new Date().toISOString() })
-    createdAt?: Date;
+    createdAt: Date;
 
     @ApiProperty({ example: new Date().toISOString() })
-    updatedAt?: Date;
+    updatedAt: Date;
 
     @ApiProperty({ example: 'guest' })
-    role?: string;
+    role: string;
 }
