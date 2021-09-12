@@ -1,6 +1,6 @@
-import * as seeding from 'typeorm-seeding';
 import * as glob from 'glob';
 import * as path from 'path';
+import * as seeding from 'typeorm-seeding';
 
 const SEEDS = [`${__dirname}/**/*.seed.{js,ts}`];
 const FACTORIES = [`${__dirname}/**/*.factory.{js,ts}`];

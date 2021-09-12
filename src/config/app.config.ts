@@ -1,5 +1,5 @@
 import * as env from 'env-var';
-import { name, description, version } from '$/package.json';
+import { name, description, version } from '@/../package.json';
 import { config as dotenv } from 'dotenv';
 
 dotenv();

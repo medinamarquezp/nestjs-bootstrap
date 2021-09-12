@@ -1,6 +1,6 @@
 import { TestClient } from './utils';
 import { factory } from '@/database/factory.loader';
-import { User } from '@/users/entities/user.entity';
+import { User } from '@/api/users/entities/user.entity';
 
 describe('Users Tests (e2e)', () => {
     let client: TestClient;

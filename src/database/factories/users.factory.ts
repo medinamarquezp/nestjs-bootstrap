@@ -1,6 +1,6 @@
-import { define } from 'typeorm-seeding';
-import { User } from '@/users/entities/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { define } from 'typeorm-seeding';
+import { User } from '@/api/users/entities/user.entity';
 import { testPassword, testUsername } from './factory.constants';
 
 const createUser = (): User => {

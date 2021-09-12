@@ -1,10 +1,10 @@
 import { TestClient } from './utils';
-import { User } from '@/users/entities/user.entity';
 import {
     testPassword,
     testUsername,
 } from '@/database/factories/factory.constants';
-import { factory } from '../src/database/factory.loader';
+import { factory } from '@/database/factory.loader';
+import { User } from '@/api/users/entities/user.entity';
 
 describe('Auth Tests (e2e)', () => {
     let client: TestClient;

@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import request = require('supertest');
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../src/app.module';
 import { INestApplication, ValidationPipe, Type } from '@nestjs/common';
-import { initFactories } from '../src/database/factory.loader';
+import { AppModule } from '@/app.module';
+import { initFactories } from '@/database/factory.loader';
 import {
     testPassword,
     testUsername,

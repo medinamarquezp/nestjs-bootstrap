@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
     BadRequestException,
@@ -7,8 +6,9 @@ import {
     ValidationPipe,
 } from '@nestjs/common';
 import * as helmet from 'helmet';
+import { AppModule } from './app.module';
 import { appConfig } from './config/app.config';
-import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception-filter';
+import { BadRequestExceptionFilter } from '@/api/shared/filters/bad-request-exception-filter';
 
 async function bootstrap(): Promise<void> {
     if (!process.env.JWT_SECRET) {

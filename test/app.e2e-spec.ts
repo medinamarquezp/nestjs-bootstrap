@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import request = require('supertest');
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@/app.module';
 
 describe('AppController (e2e)', () => {
