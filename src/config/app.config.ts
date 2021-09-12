@@ -4,7 +4,7 @@ import { config as dotenv } from 'dotenv';
 
 dotenv();
 
-interface appConfigInterface {
+export interface appConfigInterface {
     name: string;
     description: string;
     version: string;
