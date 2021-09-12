@@ -1,7 +1,6 @@
 import * as env from 'env-var';
-import { name, description, version } from '@/../package.json';
 import { config as dotenv } from 'dotenv';
-
+import { name, description, version } from '@/../package.json';
 dotenv();
 
 export interface appConfigInterface {

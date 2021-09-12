@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import * as helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { BadRequestExceptionFilter } from '@/api/shared/filters/bad-request-exception-filter';
 import { AppModule } from './app.module';
 import { appConfig } from './config/app.config';
+import { rateLimitConfig } from './config/rate-limit.config';
 import { bootstrapSwagger } from './swagger/swagger.bootstarp';
 
 export async function bootstrap(): Promise<void> {
@@ -25,6 +27,7 @@ export async function bootstrap(): Promise<void> {
     app.setGlobalPrefix('api');
     app.enableCors();
     app.use(helmet.default());
+    app.use(rateLimit(rateLimitConfig));
 
     /*
     |--------------------------------------------------------------------------

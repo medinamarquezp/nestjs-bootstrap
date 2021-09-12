@@ -1,8 +1,9 @@
-import { config } from 'dotenv';
+import * as env from 'env-var';
+import { config as dotenv } from 'dotenv';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import { BetterSqlite3ConnectionOptions } from 'typeorm/driver/better-sqlite3/BetterSqlite3ConnectionOptions';
 
-config();
+dotenv();
 
 // If running tests, an in-memory SQLite database will be used instead
 // of the configured one. NODE_ENV=test is set by Jest.
@@ -14,11 +15,11 @@ const migrations = [`${__dirname}/../database/migrations/*.{js,ts}`];
 
 const mysql: MysqlConnectionOptions = {
     type: 'mysql',
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT, 10),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    host: env.get('DB_HOST').required().asString(),
+    port: env.get('DB_PORT').required().asInt(),
+    username: env.get('DB_USERNAME').required().asString(),
+    password: env.get('DB_PASSWORD').required().asString(),
+    database: env.get('DB_DATABASE').required().asString(),
     entities,
     cli: {
         migrationsDir,
