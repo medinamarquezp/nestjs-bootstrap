@@ -4,8 +4,7 @@ import * as helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { BadRequestExceptionFilter } from '@/api/shared/filters/bad-request-exception-filter';
 import { AppModule } from './app.module';
-import { appConfig } from './config/app.config';
-import { rateLimitConfig } from './config/rate-limit.config';
+import { config } from './config';
 import { bootstrapSwagger } from './swagger/swagger.bootstarp';
 
 export async function bootstrap(): Promise<void> {
@@ -27,7 +26,7 @@ export async function bootstrap(): Promise<void> {
     app.setGlobalPrefix('api');
     app.enableCors();
     app.use(helmet.default());
-    app.use(rateLimit(rateLimitConfig));
+    app.use(rateLimit(config.rateLimit));
 
     /*
     |--------------------------------------------------------------------------
@@ -50,8 +49,8 @@ export async function bootstrap(): Promise<void> {
     |--------------------------------------------------------------------------
     */
     if (process.env.NODE_ENV !== 'production') {
-        await bootstrapSwagger(app, appConfig);
+        await bootstrapSwagger(app, config.app);
     }
 
-    await app.listen(appConfig.port);
+    await app.listen(config.app.port);
 }
